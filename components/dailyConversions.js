@@ -15,8 +15,15 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const DailyVisits = ({ tracks }) => {
+const DailyConversions = ({ conversions }) => {
   const classes = useStyles();
+
+  // Convert value to date so moment can victory the sorting
+  conversions.map(c => {
+    c.value = moment(c.value).toDate();
+    c.label = c.count;
+    return c;
+  });
 
   return (
     <div>
@@ -40,7 +47,7 @@ const DailyVisits = ({ tracks }) => {
             data: { fill: "#c43a31" }
           }}
           // labelComponent={<VictoryTooltip />}
-          data={tracks}
+          data={conversions}
           x="value"
           y="count"
           barWidth={5}
@@ -50,4 +57,4 @@ const DailyVisits = ({ tracks }) => {
   );
 };
 
-export default DailyVisits;
+export default DailyConversions;
