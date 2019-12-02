@@ -5,7 +5,7 @@ import Head from "../components/head";
 import Nav from "../components/nav";
 import { Typography, Paper, Grid, Container } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
-import { VictoryPie } from "victory";
+import { VictoryPie, VictoryChart, VictoryLegend } from "victory";
 
 import moment from "moment";
 import KPIs from "../components/kpis";
@@ -62,6 +62,44 @@ const Dashboard = ({ tracks, kpis, dailyConversions, mostActiveCampaigns }) => {
             </Paper>
           </Grid>
 
+          <Grid item xs={4}>
+            <Paper className={classes.dailyVisitsContainer}>
+              <Grid
+                container
+                alignItems="center"
+                direction="row"
+                justify="center"
+              >
+                <Typography variant="h5" className={classes.chartTitle}>
+                  Most Active Campaigns
+                </Typography>
+                <VictoryPie
+                  x="value"
+                  y="count"
+                  data={mostActiveCampaigns}
+                  labels={() => null}
+                  colorScale={["tomato", "orange", "gold", "cyan", "navy"]}
+                />
+                <VictoryLegend
+                  x={125}
+                  y={50}
+                  title="Legend"
+                  centerTitle
+                  orientation="vertical"
+                  gutter={20}
+                  style={{
+                    border: { stroke: "black" },
+                    title: { fontSize: 20 }
+                  }}
+                  colorScale={["tomato", "orange", "gold", "cyan", "navy"]}
+                  data={mostActiveCampaigns.map(campaign => ({
+                    name: campaign.value
+                  }))}
+                />
+              </Grid>
+            </Paper>
+          </Grid>
+
           <Grid container xs={12}>
             <Grid item xs={12}>
               <Typography variant="h4">KPIs</Typography>
@@ -70,18 +108,6 @@ const Dashboard = ({ tracks, kpis, dailyConversions, mostActiveCampaigns }) => {
             <Grid item xs={12}>
               <Paper>
                 <KPIs kpis={kpis} />
-              </Paper>
-            </Grid>
-          </Grid>
-
-          <Grid container xs={12}>
-            <Grid item xs={12}>
-              <Typography variant="h4">Most Active Campaigns</Typography>
-            </Grid>
-
-            <Grid item xs={12}>
-              <Paper>
-                <VictoryPie x="value" y="count" data={mostActiveCampaigns} />
               </Paper>
             </Grid>
           </Grid>
