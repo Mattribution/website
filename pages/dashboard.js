@@ -5,6 +5,7 @@ import Head from "../components/head";
 import Nav from "../components/nav";
 import { Typography, Paper, Grid, Container } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
+import { VictoryPie } from "victory";
 
 import moment from "moment";
 import KPIs from "../components/kpis";
@@ -28,7 +29,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const Dashboard = ({ tracks, kpis, dailyConversions }) => {
+const Dashboard = ({ tracks, kpis, dailyConversions, mostActiveCampaigns }) => {
   const classes = useStyles();
   tracks.map(t => {
     t.value = moment(t.value)
@@ -75,6 +76,18 @@ const Dashboard = ({ tracks, kpis, dailyConversions }) => {
 
           <Grid container xs={12}>
             <Grid item xs={12}>
+              <Typography variant="h4">Most Active Campaigns</Typography>
+            </Grid>
+
+            <Grid item xs={12}>
+              <Paper>
+                <VictoryPie x="value" y="count" data={mostActiveCampaigns} />
+              </Paper>
+            </Grid>
+          </Grid>
+
+          <Grid container xs={12}>
+            <Grid item xs={12}>
               <Typography variant="h4" gutterBottom>
                 Conversions
               </Typography>
@@ -107,9 +120,11 @@ const Dashboard = ({ tracks, kpis, dailyConversions }) => {
 Dashboard.getInitialProps = async function() {
   let res = await fetch("http://localhost:3001/v1/tracks/daily_visits");
   const tracks = await res.json();
-
   res = await fetch("http://localhost:3001/v1/kpis");
   const kpis = await res.json();
+  res = await fetch("http://localhost:3001/v1/tracks/most_active_campaigns");
+  const mostActiveCampaigns = await res.json();
+  console.log(mostActiveCampaigns);
 
   // TODO: this gets specific, must be a more general way to do this
   const dailyConversions = [];
@@ -122,7 +137,7 @@ Dashboard.getInitialProps = async function() {
     dailyConversions.push({ kpi, conversions });
   }
 
-  return { tracks, kpis, dailyConversions };
+  return { tracks, kpis, dailyConversions, mostActiveCampaigns };
 };
 
 export default Dashboard;

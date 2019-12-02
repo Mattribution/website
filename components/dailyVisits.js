@@ -5,6 +5,7 @@ import {
   VictoryAxis,
   VictoryTheme,
   VictoryBar,
+  VictoryArea,
   VictoryTooltip
 } from "victory";
 import moment from "moment";
@@ -35,15 +36,15 @@ const DailyVisits = ({ tracks }) => {
         <VictoryAxis />
         <VictoryAxis dependentAxis />
 
-        <VictoryBar
+        <VictoryArea
           style={{
             data: { fill: "#c43a31" }
           }}
-          // labelComponent={<VictoryTooltip />}
+          labelComponent={<VictoryTooltip />}
           data={tracks}
           x="value"
           y="count"
-          barWidth={5}
+          // barWidth={5}
         />
       </VictoryChart>
     </div>

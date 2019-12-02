@@ -46,7 +46,7 @@ const DailyConversions = ({ conversions }) => {
           style={{
             data: { fill: "#c43a31" }
           }}
-          // labelComponent={<VictoryTooltip />}
+          labelComponent={<VictoryTooltip />}
           data={conversions}
           x="value"
           y="count"
