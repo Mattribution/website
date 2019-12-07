@@ -7,7 +7,7 @@ import { makeStyles } from "@material-ui/styles";
 import { VictoryPie, VictoryChart, VictoryLegend } from "victory";
 import moment from "moment";
 
-import LayoutDrawer from "../components/HOCs/LayoutDrawer";
+import LayoutDrawer from "../components/Layouts/LayoutDrawer";
 import KPIs from "../components/kpis";
 import DailyVisits from "../components/dailyVisits";
 import DailyConversions from "../components/dailyConversions";
@@ -25,7 +25,13 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const Dashboard = ({ tracks, kpis, dailyConversions, mostActiveCampaigns }) => {
+const Dashboard = ({
+  tracks,
+  kpis,
+  dailyConversions,
+  campaigns,
+  mostActiveCampaigns
+}) => {
   const classes = useStyles();
   tracks.map(t => {
     t.value = moment(t.value)
@@ -36,7 +42,7 @@ const Dashboard = ({ tracks, kpis, dailyConversions, mostActiveCampaigns }) => {
   });
 
   return (
-    <LayoutDrawer>
+    <LayoutDrawer campaigns={campaigns}>
       <Head title="Home" />
 
       <Grid container spacing={2}>
@@ -144,6 +150,8 @@ Dashboard.getInitialProps = async function() {
   const kpis = await res.json();
   res = await fetch("http://localhost:3001/v1/tracks/most_active_campaigns");
   const mostActiveCampaigns = await res.json();
+  res = await fetch("http://localhost:3001/v1/tracks/campaigns");
+  const campaigns = await res.json();
 
   // TODO: this gets specific, must be a more general way to do this
   const dailyConversions = [];
@@ -156,7 +164,7 @@ Dashboard.getInitialProps = async function() {
     dailyConversions.push({ kpi, conversions });
   }
 
-  return { tracks, kpis, dailyConversions, mostActiveCampaigns };
+  return { tracks, kpis, dailyConversions, campaigns, mostActiveCampaigns };
 };
 
 export default Dashboard;

@@ -2,8 +2,8 @@ import React from "react";
 import PropTypes from "prop-types";
 import { CssBaseline, Hidden, Drawer } from "@material-ui/core";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
-import CAppBar from "../CAppBar";
-import CDrawer from "../CDrawer";
+import CAppBar from "../../CAppBar";
+import CampaignsDrawer from "./CampaignsDrawer";
 
 const drawerWidth = 240;
 
@@ -34,7 +34,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 function ResponsiveDrawer(props) {
-  const { container } = props;
+  const { container, campaigns } = props;
   const classes = useStyles();
   const theme = useTheme();
   const [mobileOpen, setMobileOpen] = React.useState(false);
@@ -63,7 +63,7 @@ function ResponsiveDrawer(props) {
               keepMounted: true // Better open performance on mobile.
             }}
           >
-            {<CDrawer />}
+            {<CampaignsDrawer campaigns={campaigns} />}
           </Drawer>
         </Hidden>
         <Hidden xsDown implementation="css">
@@ -74,7 +74,7 @@ function ResponsiveDrawer(props) {
             variant="permanent"
             open
           >
-            {<CDrawer />}
+            {<CampaignsDrawer campaigns={campaigns} />}
           </Drawer>
         </Hidden>
       </nav>
