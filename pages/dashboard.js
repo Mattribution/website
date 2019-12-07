@@ -77,6 +77,7 @@ const Dashboard = ({ tracks, kpis, dailyConversions, mostActiveCampaigns }) => {
                   x="value"
                   y="count"
                   data={mostActiveCampaigns}
+                  // innerRadius={100}
                   labels={() => null}
                   colorScale={["tomato", "orange", "gold", "cyan", "navy"]}
                 />
@@ -150,14 +151,13 @@ Dashboard.getInitialProps = async function() {
   const kpis = await res.json();
   res = await fetch("http://localhost:3001/v1/tracks/most_active_campaigns");
   const mostActiveCampaigns = await res.json();
-  console.log(mostActiveCampaigns);
 
   // TODO: this gets specific, must be a more general way to do this
   const dailyConversions = [];
   for (let i = 0; i < kpis.length; i++) {
     const kpi = kpis[i];
     res = await fetch(
-      `http://localhost:3001/v1/kpis/${kpi.id}/daily_conversion_count?`
+      `http://localhost:3001/v1/kpis/${kpi.id}/daily_conversion_count`
     );
     const conversions = await res.json();
     dailyConversions.push({ kpi, conversions });
