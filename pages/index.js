@@ -1,14 +1,12 @@
 import React from "react";
 import Link from "next/link";
 import Head from "../components/head";
-import Nav from "../components/nav";
+import LayoutVanilla from "../components/HOCs/LayoutVanilla";
 
 const Home = () => {
-  const classes = useStyles();
   return (
-    <div>
+    <LayoutVanilla>
       <Head title="Home" />
-      <Nav />
 
       <div className="hero">
         <h1 className="title">Welcome to Next!</h1>
@@ -87,7 +85,7 @@ const Home = () => {
           color: #333;
         }
       `}</style>
-    </div>
+    </LayoutVanilla>
   );
 };
 

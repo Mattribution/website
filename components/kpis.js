@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import fetch from "isomorphic-unfetch";
 
 import Head from "../components/head";
-import Nav from "../components/nav";
 import { makeStyles } from "@material-ui/styles";
 import {
   Table,
