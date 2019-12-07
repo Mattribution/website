@@ -34,7 +34,6 @@ const DailyConversions = ({ conversions }) => {
       conversionsFormatted[i].count + conversionsFormatted[i - 1].count;
   }
 
-  console.log(conversionsFormatted);
   return (
     <div>
       <VictoryChart
