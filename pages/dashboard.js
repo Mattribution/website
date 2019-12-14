@@ -150,12 +150,6 @@ Dashboard.getInitialProps = async function() {
   const kpis = await res.json();
   res = await fetch("http://localhost:3001/v1/tracks/most_active_campaigns");
   const mostActiveCampaigns = await res.json();
-  // Scan for new campaigns in tracking data
-  // TODO: Optimize this, maybe in scheduler
-  await fetch("http://localhost:3001/v1/campaigns/scan");
-  // Get campaigns after
-  res = await fetch("http://localhost:3001/v1/campaigns");
-  const campaigns = await res.json();
 
   // TODO: this gets specific, must be a more general way to do this
   const dailyConversions = [];
