@@ -33,7 +33,9 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const CustomDrawer = ({ campaigns }) => {
+const campaigns = [];
+
+const CustomDrawer = () => {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
   const handleClick = () => {
