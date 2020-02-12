@@ -81,28 +81,11 @@ const CustomDrawer = ({ campaigns }) => {
       <Divider />
 
       <List>
-        <ListItem button onClick={handleClick}>
-          <ListItemText primary="Campaigns" />
-          {open ? <ExpandLess /> : <ExpandMore />}
-        </ListItem>
-
-        <Collapse in={open} timeout="auto" unmountOnExit>
-          {/* <Grid container alignItems="center" className={classes.nested}>
-            <Fab
-              color="primary"
-              size="small"
-              aria-label="add"
-              className={classes.refreshButton}
-            >
-              <RefreshIcon />
-            </Fab>
-            <Typography color="secondary" className={classes.secondaryLabel}>
-              Refresh
-            </Typography>
-          </Grid> */}
-
-          {renderCampaignsList()}
-        </Collapse>
+        <Link href="/campaigns" as={`/campaigns`}>
+          <ListItem button onClick={handleClick}>
+            <ListItemText primary="Campaigns" />
+          </ListItem>
+        </Link>
       </List>
     </div>
   );

@@ -1,92 +1,83 @@
 import React from "react";
-import Link from "next/link";
-import Head from "../components/head";
-import LayoutVanilla from "../components/Layouts/LayoutVanilla";
+import fetch from "isomorphic-unfetch";
 
-const Home = () => {
+import Head from "../components/head";
+import { Typography, Paper, Grid, Container } from "@material-ui/core";
+import { makeStyles } from "@material-ui/styles";
+import { VictoryPie, VictoryChart, VictoryLegend } from "victory";
+import moment from "moment";
+
+import LayoutDrawer from "../components/Layouts/LayoutDrawer";
+import KPIs from "../components/kpis";
+import DailyVisits from "../components/dailyVisits";
+import DailyConversions from "../components/dailyConversions";
+
+const useStyles = makeStyles(theme => ({
+  chartTitle: {
+    color: "gray"
+  },
+  paper: {
+    height: 140,
+    width: 100
+  },
+  control: {
+    padding: theme.spacing(2)
+  }
+}));
+
+const Dashboard = ({
+  tracks,
+  kpis,
+  dailyConversions,
+  campaigns,
+  mostActiveCampaigns
+}) => {
+  const classes = useStyles();
+
   return (
-    <LayoutVanilla>
+    <LayoutDrawer campaigns={campaigns}>
       <Head title="Home" />
 
-      <div className="hero">
-        <h1 className="title">Welcome to Next!</h1>
-        <p className="description">
-          To get started, edit <code>pages/index.js</code> and save to reload.
-        </p>
-
-        <div className="row">
-          {/* <Link href="https://github.com/zeit/next.js#getting-started">
-          <a className="card">
-            <h3>Getting Started &rarr;</h3>
-            <p>Learn more about Next on Github and in their examples</p>
-          </a>
-        </Link>
-        <Link href="https://open.segment.com/create-next-app">
-          <a className="card">
-            <h3>Examples &rarr;</h3>
-            <p>
-              Find other example boilerplates on the{' '}
-              <code>create-next-app</code> site
-            </p>
-          </a>
-        </Link>
-        <Link href="https://github.com/segmentio/create-next-app">
-          <a className="card">
-            <h3>Create Next App &rarr;</h3>
-            <p>Was this tool helpful? Let us know how we can improve it</p>
-          </a>
-        </Link> */}
-        </div>
-      </div>
-
-      <style jsx>{`
-        .hero {
-          width: 100%;
-          color: #333;
-        }
-        .title {
-          margin: 0;
-          width: 100%;
-          padding-top: 80px;
-          line-height: 1.15;
-          font-size: 48px;
-        }
-        .title,
-        .description {
-          text-align: center;
-        }
-        .row {
-          max-width: 880px;
-          margin: 80px auto 40px;
-          display: flex;
-          flex-direction: row;
-          justify-content: space-around;
-        }
-        .card {
-          padding: 18px 18px 24px;
-          width: 220px;
-          text-align: left;
-          text-decoration: none;
-          color: #434343;
-          border: 1px solid #9b9b9b;
-        }
-        .card:hover {
-          border-color: #067df7;
-        }
-        .card h3 {
-          margin: 0;
-          color: #067df7;
-          font-size: 18px;
-        }
-        .card p {
-          margin: 0;
-          padding: 12px 0 0;
-          font-size: 13px;
-          color: #333;
-        }
-      `}</style>
-    </LayoutVanilla>
+      <Grid container spacing={2}>
+        <Grid item xs={4}>
+          <Paper className={classes.dailyVisitsContainer}>
+            <Grid
+              container
+              alignItems="center"
+              direction="row"
+              justify="center"
+            >
+              <Typography variant="h5" className={classes.chartTitle}>
+                Daily Visits
+              </Typography>
+            </Grid>
+          </Paper>
+        </Grid>
+      </Grid>
+    </LayoutDrawer>
   );
 };
 
-export default Home;
+Dashboard.getInitialProps = async function() {
+  // let res = await fetch("http://localhost:3001/v1/tracks/daily_visits");
+  // const tracks = await res.json();
+  // res = await fetch("http://localhost:3001/v1/kpis");
+  // const kpis = await res.json();
+  // res = await fetch("http://localhost:3001/v1/tracks/most_active_campaigns");
+  // const mostActiveCampaigns = await res.json();
+
+  // // TODO: this gets specific, must be a more general way to do this
+  // const dailyConversions = [];
+  // for (let i = 0; i < kpis.length; i++) {
+  //   const kpi = kpis[i];
+  //   res = await fetch(
+  //     `http://localhost:3001/v1/kpis/${kpi.id}/daily_conversion_count`
+  //   );
+  //   const conversions = await res.json();
+  //   dailyConversions.push({ kpi, conversions });
+  // }
+
+  return {};
+};
+
+export default Dashboard;
