@@ -42,10 +42,10 @@ const Home = () => {
   );
 };
 
-Home.getInitialProps = async () => {
+Home.getInitialProps = async ({ store: { authStore }, query }) => {
   await authStore.signin();
 
-  const user = authStore.getUser(id);
+  const user = authStore.getUser();
 
   return {
     user

@@ -5,7 +5,7 @@ import { ThemeProvider } from "@material-ui/core/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import { withMobx } from "next-mobx-wrapper";
 import theme from "../src/theme";
-import * as getStores from "../stores";
+import * as getStores from "../src/stores";
 
 class MyApp extends App {
   componentDidMount() {

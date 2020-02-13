@@ -1,4 +1,7 @@
 {
   "presets": ["next/babel"],
-  "plugins": ["transform-decorators-legacy", "babel-root-import"]
+  "plugins": [
+    ["@babel/plugin-proposal-decorators", { "legacy": true }],
+    ["@babel/plugin-proposal-class-properties", { "loose": true }]
+  ]
 }

@@ -1,6 +1,5 @@
 import { BaseStore, getOrCreateStore } from "next-mobx-wrapper";
 import { observable, action, flow } from "mobx";
-import fetch from "fetch";
 
 const mockUser = {
   name: "Zac Holland"
@@ -12,7 +11,7 @@ class Store extends BaseStore {
   signin = flow(function*(username, password) {
     // TODO: Do check to make sure user isnt already signed in
     // TODO: sign in with firebase
-    user = mockUser;
+    this.user = mockUser;
   });
 
   getUser = () => {
