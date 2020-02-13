@@ -1,30 +1,45 @@
 import { BaseStore, getOrCreateStore } from "next-mobx-wrapper";
 import { observable, action, flow } from "mobx";
-
-const mockUser = {
-  name: "Zac Holland"
-};
+import firebase from "firebase";
+import { auth } from "./";
 
 class Store extends BaseStore {
   @observable user = null;
 
-  // signin = flow(function*(username, password) {
-  //   // TODO: Do check to make sure user isnt already signed in
-  //   // TODO: sign in with firebase
-  //   this.user = mockUser;
-  // });
+  constructor(isServer) {
+    this.unwatchAuth = auth.onAuthStateChanged(user => {
+      this.user = user;
+    });
+  }
 
-  signin = () => {
-    this.user = mockUser;
+  cleanup() {
+    if (this.unwatchAuth) {
+      this.unwatchAuth();
+    }
+  }
+
+  signInWithGoogle = () => {
+    const provider = new firebase.auth.GoogleAuthProvider();
+    auth
+      .signInWithPopup(provider)
+      .then(function(result) {
+        // console.log(result);
+      })
+      .catch(function(error) {
+        // const errorMessage = error.message;
+      });
   };
 
-  getUser = () => {
-    return this.user;
+  signOut = () => {
+    auth.signOut().then(
+      function() {
+        // Sign-out successful.
+      },
+      function(error) {
+        // An error happened.
+      }
+    );
   };
 }
 
-// Make sure the store’s unique name
-// AND must be same formula
-// Example: getUserStore => userStore
-// Example: getProductStore => productStore
 export const getAuthStore = getOrCreateStore("authStore", Store);
