@@ -1,7 +1,10 @@
 import React from "react";
 import Link from "next/link";
 import Head from "../components/head";
+import Router from "next/router";
 import LayoutDrawer from "../components/Layouts/LayoutDrawer";
+
+import withAuth from "../components/HOC/withAuth";
 
 const Home = () => {
   return (
@@ -43,13 +46,14 @@ const Home = () => {
 };
 
 Home.getInitialProps = async ({ store: { authStore }, query }) => {
-  await authStore.signin();
-
   const user = authStore.getUser();
+  if (user == null) {
+    Router.push("/login");
+  }
 
   return {
     user
   };
 };
 
-export default Home;
+export default withAuth(Home);
