@@ -53,7 +53,7 @@ export default function SignUp() {
   const classes = useStyles();
 
   return (
-    <LayoutVanilla>
+    <div>
       <Head title="Signin" />
       <Container component="main" maxWidth="xs">
         <CssBaseline />
@@ -140,6 +140,6 @@ export default function SignUp() {
           </form>
         </div>
       </Container>
-    </LayoutVanilla>
+    </div>
   );
 }

@@ -1,12 +1,13 @@
 import React, { Component } from "react";
 import Router from "next/router";
-import { inject } from "mobx-react";
+import { observer, inject } from "mobx-react";
 import { CircularProgress } from "@material-ui/core";
 
 const withAuth = WrappedComponent =>
-  @inject(props => ({
-    p: props
-  }))
+  @inject("authStore")
+  @observer
+  // @inject("authStore")
+  // @observer
   class extends Component {
     constructor(props) {
       super(props);
@@ -16,7 +17,9 @@ const withAuth = WrappedComponent =>
     }
 
     componentDidMount() {
-      const { user } = this.props;
+      const { authStore } = this.props;
+      const user = authStore.getUser();
+      console.log("User: ", user);
       if (user == null) {
         Router.push("/signin");
         return;

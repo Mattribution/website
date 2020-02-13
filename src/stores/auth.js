@@ -8,11 +8,15 @@ const mockUser = {
 class Store extends BaseStore {
   @observable user = null;
 
-  signin = flow(function*(username, password) {
-    // TODO: Do check to make sure user isnt already signed in
-    // TODO: sign in with firebase
+  // signin = flow(function*(username, password) {
+  //   // TODO: Do check to make sure user isnt already signed in
+  //   // TODO: sign in with firebase
+  //   this.user = mockUser;
+  // });
+
+  signin = () => {
     this.user = mockUser;
-  });
+  };
 
   getUser = () => {
     return this.user;
