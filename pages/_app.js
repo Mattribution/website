@@ -3,9 +3,11 @@ import App from "next/app";
 import Head from "next/head";
 import { ThemeProvider } from "@material-ui/core/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
+import { withMobx } from "next-mobx-wrapper";
 import theme from "../src/theme";
+import * as getStores from "../stores";
 
-export default class MyApp extends App {
+class MyApp extends App {
   componentDidMount() {
     // Remove the server-side injected CSS.
     const jssStyles = document.querySelector("#jss-server-side");
@@ -28,3 +30,5 @@ export default class MyApp extends App {
     );
   }
 }
+
+export default withMobx(getStores)(MyApp);

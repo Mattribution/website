@@ -42,4 +42,14 @@ const Home = () => {
   );
 };
 
+Home.getInitialProps = async () => {
+  await authStore.signin();
+
+  const user = authStore.getUser(id);
+
+  return {
+    user
+  };
+};
+
 export default Home;
