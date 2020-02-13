@@ -4,8 +4,9 @@ import Head from "../components/head";
 import Router from "next/router";
 import LayoutDrawer from "../components/Layouts/LayoutDrawer";
 
-import withAuth from "../components/HOC/withAuth";
+import authProtected from "../components/HOC/authProtected";
 
+@authProtected
 class Home extends React.Component {
   render() {
     return (
@@ -25,4 +26,4 @@ class Home extends React.Component {
   }
 }
 
-export default withAuth(Home);
+export default Home;
