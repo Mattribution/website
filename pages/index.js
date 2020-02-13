@@ -1,83 +1,50 @@
-import React from "react";
-import fetch from "isomorphic-unfetch";
+import React from 'react'
+import { makeStyles } from '@material-ui/core/styles';
 
-import Head from "../components/head";
-import { Typography, Paper, Grid, Container } from "@material-ui/core";
-import { makeStyles } from "@material-ui/styles";
-import { VictoryPie, VictoryChart, VictoryLegend } from "victory";
-import moment from "moment";
-
-import LayoutDrawer from "../components/Layouts/LayoutDrawer";
-import KPIs from "../components/kpis";
-import DailyVisits from "../components/dailyVisits";
-import DailyConversions from "../components/dailyConversions";
+import Layout from '../components/layout'
+import { useFetchUser } from '../lib/user'
 
 const useStyles = makeStyles(theme => ({
-  chartTitle: {
-    color: "gray"
+  button: {
+    margin: theme.spacing(1),
   },
-  paper: {
-    height: 140,
-    width: 100
+  input: {
+    display: 'none',
   },
-  control: {
-    padding: theme.spacing(2)
-  }
 }));
 
-const Dashboard = ({
-  tracks,
-  kpis,
-  dailyConversions,
-  campaigns,
-  mostActiveCampaigns
-}) => {
+function Home() {
+  const { user, loading } = useFetchUser()
   const classes = useStyles();
 
   return (
-    <LayoutDrawer campaigns={campaigns}>
-      <Head title="Home" />
+    <Layout user={user} loading={loading}>
+      <h1>Next.js and Auth0 Example</h1>
 
-      <Grid container spacing={2}>
-        <Grid item xs={4}>
-          <Paper className={classes.dailyVisitsContainer}>
-            <Grid
-              container
-              alignItems="center"
-              direction="row"
-              justify="center"
-            >
-              <Typography variant="h5" className={classes.chartTitle}>
-                Daily Visits
-              </Typography>
-            </Grid>
-          </Paper>
-        </Grid>
-      </Grid>
-    </LayoutDrawer>
-  );
-};
+      {loading && <p>Loading login info...</p>}
 
-Dashboard.getInitialProps = async function() {
-  // let res = await fetch("http://localhost:3001/v1/tracks/daily_visits");
-  // const tracks = await res.json();
-  // res = await fetch("http://localhost:3001/v1/kpis");
-  // const kpis = await res.json();
-  // res = await fetch("http://localhost:3001/v1/tracks/most_active_campaigns");
-  // const mostActiveCampaigns = await res.json();
+      {!loading && !user && (
+        <>
+          <p>
+            To test the login click in <i>Login</i>
+          </p>
+          <p>
+            Once you have logged in you should be able to click in{' '}
+            <i>Profile</i> and <i>Logout</i>
+          </p>
+        </>
+      )}
 
-  // // TODO: this gets specific, must be a more general way to do this
-  // const dailyConversions = [];
-  // for (let i = 0; i < kpis.length; i++) {
-  //   const kpi = kpis[i];
-  //   res = await fetch(
-  //     `http://localhost:3001/v1/kpis/${kpi.id}/daily_conversion_count`
-  //   );
-  //   const conversions = await res.json();
-  //   dailyConversions.push({ kpi, conversions });
-  // }
+      {user && (
+        <>
+          <h4>Rendered user info on the client</h4>
+          <img src={user.picture} alt="user picture" />
+          <p>nickname: {user.nickname}</p>
+          <p>name: {user.name}</p>
+        </>
+      )}
+    </Layout>
+  )
+}
 
-  return {};
-};
-
-export default Dashboard;
+export default Home
