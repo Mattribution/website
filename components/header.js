@@ -1,44 +1,59 @@
-import Link from 'next/link'
+import Link from "next/link";
+import { makeStyles } from "@material-ui/styles";
 
-function Header({ user, loading }) {
+import { AppBar, Toolbar, Typography, Button } from "@material-ui/core";
+
+const useStyles = makeStyles(theme => ({
+  title: {
+    flexGrow: 1
+  }
+}));
+
+function Header({ user, loading, className }) {
+  const classes = useStyles();
+
+  const renderAuthButtons = () => {
+    if (loading) {
+      return;
+    }
+
+    if (user) {
+      return (
+        <>
+          <Link href="/profile">
+            <Button color="inherit">Profile</Button>
+          </Link>
+
+          {/* <Link href="/advanced/ssr-profile">
+            <Button color="inherit">Server rendered profile (advanced)</Button>
+          </Link> */}
+
+          <Link href="/api/logout">
+            <Button color="inherit">Logout</Button>
+          </Link>
+        </>
+      );
+    }
+
+    return (
+      <>
+        <Link href="/api/login">
+          <Button color="inherit">Login</Button>
+        </Link>
+      </>
+    );
+  };
+
   return (
     <header>
-      <nav>
-        <ul>
-          <li>
-            <Link href="/">
-              <a>Home</a>
-            </Link>
-          </li>
-          <li>
-            <Link href="/about">
-              <a>About</a>
-            </Link>
-          </li>
-          {!loading &&
-            (user ? (
-              <>
-                <li>
-                  <Link href="/profile">
-                    <a>Client-rendered profile</a>
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/advanced/ssr-profile">
-                    <a>Server rendered profile (advanced)</a>
-                  </Link>
-                </li>
-                <li>
-                  <a href="/api/logout">Logout</a>
-                </li>
-              </>
-            ) : (
-              <li>
-                <a href="/api/login">Login</a>
-              </li>
-            ))}
-        </ul>
-      </nav>
+      <AppBar position="fixed" className={className}>
+        <Toolbar>
+          <Typography className={classes.title} variant="h6" noWrap>
+            MAttribution
+          </Typography>
+          {renderAuthButtons()}
+        </Toolbar>
+      </AppBar>
 
       <style jsx>{`
         header {
@@ -75,7 +90,7 @@ function Header({ user, loading }) {
         }
       `}</style>
     </header>
-  )
+  );
 }
 
-export default Header
+export default Header;
