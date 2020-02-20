@@ -16,6 +16,8 @@ export default async function kpis(req, res) {
       }
     });
 
+    console.log(response);
+
     const shows = await response.json();
     res.status(200).json(shows);
   } catch (error) {
