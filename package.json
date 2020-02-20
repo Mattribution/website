@@ -8,7 +8,7 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "@auth0/nextjs-auth0": "^0.6.0",
+    "@auth0/nextjs-auth0": "^0.8.0",
     "@material-ui/core": "latest",
     "@material-ui/icons": "^4.9.1",
     "dotenv": "^8.2.0",
