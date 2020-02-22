@@ -86,6 +86,11 @@ const CustomDrawer = ({ campaigns }) => {
             <ListItemText primary="Campaigns" />
           </ListItem>
         </Link>
+        <Link href="/kpis" as={`/kpis`}>
+          <ListItem button onClick={handleClick}>
+            <ListItemText primary="KPIs" />
+          </ListItem>
+        </Link>
       </List>
     </div>
   );

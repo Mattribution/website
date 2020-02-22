@@ -7,7 +7,6 @@ export default async function kpis(req, res) {
   try {
     const tokenCache = auth0.tokenCache(req, res);
     const { accessToken } = await tokenCache.getAccessToken();
-    console.log("Access token: ", accessToken);
 
     const url = `${config.API_BASE_URL}/kpis`;
     const response = await fetch(url, {
@@ -15,8 +14,6 @@ export default async function kpis(req, res) {
         Authorization: `Bearer ${accessToken}`
       }
     });
-
-    console.log(response);
 
     const shows = await response.json();
     res.status(200).json(shows);

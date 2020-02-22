@@ -14,7 +14,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 function Home() {
-  const { user, loading } = useFetchUser();
+  const { user, loading } = useFetchUser({ required: true });
   const classes = useStyles();
 
   return (

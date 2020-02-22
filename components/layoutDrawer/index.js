@@ -1,6 +1,13 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { CssBaseline, Hidden, Drawer } from "@material-ui/core";
+import {
+  CssBaseline,
+  Hidden,
+  Drawer,
+  AppBar,
+  Toolbar,
+  Typography
+} from "@material-ui/core";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import DrawerContent from "./drawerContent";
 import Header from "../header";
@@ -47,12 +54,7 @@ function ResponsiveDrawer(props) {
   return (
     <div className={classes.root}>
       <CssBaseline />
-      <Header
-        user={user}
-        loading={loading}
-        position="fixed"
-        className={classes.appBar}
-      />
+      <Header user={user} loading={loading} className={classes.appBar} />
       <nav className={classes.drawer} aria-label="mailbox folders">
         {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
         <Hidden smUp implementation="css">
