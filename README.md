@@ -1,234 +1,100 @@
-This project was bootstrapped with [Create Next App](https://github.com/segmentio/create-next-app).
+# Next.js and Auth0 Example
 
-Find the most recent version of this guide at [here](https://github.com/segmentio/create-next-app/blob/master/lib/templates/default/README.md). And check out [Next.js repo](https://github.com/zeit/next.js) for the most up-to-date info.
+This example shows how you can use `@auth0/nextjs-auth` to easily add authentication support to your Next.js application.
 
-## Table of Contents
+Read more: [https://auth0.com/blog/ultimate-guide-nextjs-authentication-auth0/](https://auth0.com/blog/ultimate-guide-nextjs-authentication-auth0/)
 
-- [Questions? Feedback?](#questions-feedback)
-- [Folder Structure](#folder-structure)
-- [Available Scripts](#available-scripts)
-  - [npm run dev](#npm-run-dev)
-  - [npm run build](#npm-run-build)
-  - [npm run start](#npm-run-start)
-- [Using CSS](#using-css)
-- [Adding Components](#adding-components)
-- [Fetching Data](#fetching-data)
-- [Custom Server](#custom-server)
-- [Syntax Highlighting](#syntax-highlighting)
-- [Using the `static` Folder](#using-the-static-folder)
-- [Deploy to Now](#deploy-to-now)
-- [Something Missing?](#something-missing)
+### Using `create-next-app`
 
-## Questions? Feedback?
+Execute [`create-next-app`](https://github.com/zeit/next.js/tree/canary/packages/create-next-app) with [npm](https://docs.npmjs.com/cli/init) or [Yarn](https://yarnpkg.com/lang/en/docs/cli/create/) to bootstrap the example:
 
-Check out [Next.js FAQ & docs](https://github.com/zeit/next.js#faq) or [let us know](https://github.com/segmentio/create-next-app/issues) your feedback.
-
-## Folder Structure
-
-After creating an app, it should look something like:
-
-```
-.
-├── README.md
-├── components
-│   ├── head.js
-│   └── nav.js
-├── next.config.js
-├── node_modules
-│   ├── [...]
-├── package.json
-├── pages
-│   └── index.js
-├── static
-│   └── favicon.ico
-└── yarn.lock
+```bash
+npm init next-app --example auth0 auth0
+# or
+yarn create next-app --example auth0 auth0
 ```
 
-Routing in Next.js is based on the file system, so `./pages/index.js` maps to the `/` route and
-`./pages/about.js` would map to `/about`.
+## Configuring Auth0
 
-The `./static` directory maps to `/static` in the `next` server, so you can put all your
-other static resources like images or compiled CSS in there.
+1. Go to the [Auth0 dashboard](https://manage.auth0.com/) and create a new application of type _Regular Web Applications_ and make sure to configure the following
+2. Go to the settings page of the application
+3. Configure the following settings:
 
-Out of the box, we get:
+- _Allowed Callback URLs_: Should be set to `http://localhost:3000/api/callback` when testing locally or typically to `https://myapp.com/api/callback` when deploying your application.
+- _Allowed Logout URLs_: Should be set to `http://localhost:3000/` when testing locally or typically to `https://myapp.com/` when deploying your application.
 
-- Automatic transpilation and bundling (with webpack and babel)
-- Hot code reloading
-- Server rendering and indexing of `./pages`
-- Static file serving. `./static/` is mapped to `/static/`
+4. Save the settings
 
-Read more about [Next's Routing](https://github.com/zeit/next.js#routing)
+### Configuring Next.js
 
-## Available Scripts
+In the Next.js configuration file (`next.config.js`) you'll see that different environment variables are being assigned.
 
-In the project directory, you can run:
+### Local Development
 
-### `npm run dev`
+For local development you'll want to create a `.env` file with the necessary settings.
 
-Runs the app in the development mode.<br>
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+The required settings can be found on the Auth0 application's settings page:
 
-The page will reload if you make edits.<br>
-You will also see any errors in the console.
+```
+AUTH0_DOMAIN=YOUR_AUTH0_DOMAIN
+AUTH0_CLIENT_ID=YOUR_AUTH0_CLIENT_ID
+AUTH0_CLIENT_SECRET=YOUR_AUTH0_CLIENT_SECRET
 
-### `npm run build`
+SESSION_COOKIE_SECRET=viloxyf_z2GW6K4CT-KQD_MoLEA2wqv5jWuq4Jd0P7ymgG5GJGMpvMneXZzhK3sL (at least 32 characters, used to encrypt the cookie)
 
-Builds the app for production to the `.next` folder.<br>
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-### `npm run start`
-
-Starts the application in production mode.
-The application should be compiled with \`next build\` first.
-
-See the section in Next docs about [deployment](https://github.com/zeit/next.js/wiki/Deployment) for more information.
-
-## Using CSS
-
-[`styled-jsx`](https://github.com/zeit/styled-jsx) is bundled with next to provide support for isolated scoped CSS. The aim is to support "shadow CSS" resembling of Web Components, which unfortunately [do not support server-rendering and are JS-only](https://github.com/w3c/webcomponents/issues/71).
-
-```jsx
-export default () => (
-  <div>
-    Hello world
-    <p>scoped!</p>
-    <style jsx>{`
-      p {
-        color: blue;
-      }
-      div {
-        background: red;
-      }
-      @media (max-width: 600px) {
-        div {
-          background: blue;
-        }
-      }
-    `}</style>
-  </div>
-)
+REDIRECT_URI=http://localhost:3000/api/callback
+POST_LOGOUT_REDIRECT_URI=http://localhost:3000/
 ```
 
-Read more about [Next's CSS features](https://github.com/zeit/next.js#css).
+### Hosting on ZEIT Now
 
-## Adding Components
+When deploying this example to ZEIT Now you'll want to update the `now.json` configuration file.
 
-We recommend keeping React components in `./components` and they should look like:
-
-### `./components/simple.js`
-
-```jsx
-const Simple = () => <div>Simple Component</div>
-
-export default Simple // don't forget to export default!
-```
-
-### `./components/complex.js`
-
-```jsx
-import { Component } from 'react'
-
-class Complex extends Component {
-  state = {
-    text: 'World'
-  }
-
-  render() {
-    const { text } = this.state
-    return <div>Hello {text}</div>
-  }
-}
-
-export default Complex // don't forget to export default!
-```
-
-## Fetching Data
-
-You can fetch data in `pages` components using `getInitialProps` like this:
-
-### `./pages/stars.js`
-
-```jsx
-const Page = props => <div>Next stars: {props.stars}</div>
-
-Page.getInitialProps = async ({ req }) => {
-  const res = await fetch('https://api.github.com/repos/zeit/next.js')
-  const json = await res.json()
-  const stars = json.stargazers_count
-  return { stars }
-}
-
-export default Page
-```
-
-For the initial page load, `getInitialProps` will execute on the server only. `getInitialProps` will only be executed on the client when navigating to a different route via the `Link` component or using the routing APIs.
-
-_Note: `getInitialProps` can **not** be used in children components. Only in `pages`._
-
-Read more about [fetching data and the component lifecycle](https://github.com/zeit/next.js#fetching-data-and-component-lifecycle)
-
-## Custom Server
-
-Want to start a new app with a custom server? Run `create-next-app --example customer-server custom-app`
-
-Typically you start your next server with `next start`. It's possible, however, to start a server 100% programmatically in order to customize routes, use route patterns, etc
-
-This example makes `/a` resolve to `./pages/b`, and `/b` resolve to `./pages/a`:
-
-```jsx
-const { createServer } = require('http')
-const { parse } = require('url')
-const next = require('next')
-
-const dev = process.env.NODE_ENV !== 'production'
-const app = next({ dev })
-const handle = app.getRequestHandler()
-
-app.prepare().then(() => {
-  createServer((req, res) => {
-    // Be sure to pass `true` as the second argument to `url.parse`.
-    // This tells it to parse the query portion of the URL.
-    const parsedUrl = parse(req.url, true)
-    const { pathname, query } = parsedUrl
-
-    if (pathname === '/a') {
-      app.render(req, res, '/b', query)
-    } else if (pathname === '/b') {
-      app.render(req, res, '/a', query)
-    } else {
-      handle(req, res, parsedUrl)
+```json
+{
+  "build": {
+    "env": {
+      "AUTH0_DOMAIN": "YOUR_AUTH0_DOMAIN",
+      "AUTH0_CLIENT_ID": "YOUR_AUTH0_CLIENT_ID",
+      "AUTH0_CLIENT_SECRET": "@auth0_client_secret",
+      "REDIRECT_URI": "https://my-website.now.sh/api/callback",
+      "POST_LOGOUT_REDIRECT_URI": "https://my-website.now.sh/",
+      "SESSION_COOKIE_SECRET": "@session_cookie_secret",
+      "SESSION_COOKIE_LIFETIME": 7200
     }
-  }).listen(3000, err => {
-    if (err) throw err
-    console.log('> Ready on http://localhost:3000')
-  })
-})
+  }
+}
 ```
 
-Then, change your `start` script to `NODE_ENV=production node server.js`.
+- `AUTH0_DOMAIN` - Can be found in the Auth0 dashboard under `settings`.
+- `AUTH0_CLIENT_ID` - Can be found in the Auth0 dashboard under `settings`.
+- `AUTH0_CLIENT_SECRET` - Can be found in the Auth0 dashboard under `settings`.
+- `REDIRECT_URI` - The url where Auth0 redirects back to, make sure a consistent url is used here.
+- `POST_LOGOUT_REDIRECT_URI` - Where to redirect after logging out
+- `SESSION_COOKIE_SECRET` - A unique secret used to encrypt the cookies, has to be at least 32 characters. You can use [this generator](https://generate-secret.now.sh/32) to generate a value.
+- `SESSION_COOKIE_LIFETIME` - How long a session lasts in seconds. The default is 2 hours.
 
-Read more about [custom server and routing](https://github.com/zeit/next.js#custom-server-and-routing)
+The `@auth0_client_secret` and `@session_cookie_secret` are [ZEIT Now environment secrets](https://zeit.co/docs/v2/environment-variables-and-secrets/)
 
-## Syntax Highlighting
+You can create the `@auth0_client_secret` by running:
 
-To configure the syntax highlighting in your favorite text editor, head to the [relevant Babel documentation page](https://babeljs.io/docs/editors) and follow the instructions. Some of the most popular editors are covered.
+```
+now secrets add auth0_client_secret PLACE_YOUR_AUTH0_CLIENT_SECRET
+```
 
-## Deploy to Now
+And create the `session_cookie_secret` by generating a value [here](https://generate-secret.now.sh/32) and running:
 
-[now](https://zeit.co/now) offers a zero-configuration single-command deployment.
+```
+now secrets add session_cookie_secret PLACE_YOUR_SESSION_COOKIE_SECRET
+```
 
-1.  Install the `now` command-line tool either via the recommended [desktop tool](https://zeit.co/download) or via node with `npm install -g now`.
+## About this sample
 
-2.  Run `now` from your project directory. You will see a **now.sh** URL in your output like this:
+This sample tries to cover a few topics:
 
-    ```
-    > Ready! https://your-project-dirname-tpspyhtdtk.now.sh (copied to clipboard)
-    ```
-
-    Paste that URL into your browser when the build is complete, and you will see your deployed app.
-
-You can find more details about [`now` here](https://zeit.co/now).
-
-## Something Missing?
-
-If you have ideas for how we could improve this readme or the project in general, [let us know](https://github.com/segmentio/create-next-app/issues) or [contribute some!](https://github.com/segmentio/create-next-app/edit/master/lib/templates/default/README.md)
+- Signing in
+- Signing out
+- Loading the user on the server side and adding it as part of SSR (`/pages/advanced/ssr-profile.js`)
+- Loading the user on the client side and using fast/cached SSR pages (`/pages/index.js`)
+- API Routes which can load the current user (`/pages/api/me.js`)
+- Using hooks to make the user available throughout the application (`/lib/user.js`)

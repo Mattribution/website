@@ -1,22 +1,14 @@
-import React, { useState } from "react";
-import Link from "next/link";
-import Divider from "@material-ui/core/Divider";
-import RefreshIcon from "@material-ui/icons/Refresh";
-import ExpandLess from "@material-ui/icons/ExpandLess";
-import ExpandMore from "@material-ui/icons/ExpandMore";
 import {
-  Collapse,
-  ListItemText,
-  ListItemIcon,
-  ListItem,
+  CircularProgress,
   List,
-  IconButton,
-  Fab,
-  Grid,
-  Typography,
-  CircularProgress
+  ListItem,
+  ListItemText,
+  Typography
 } from "@material-ui/core";
-import { makeStyles, useTheme } from "@material-ui/core/styles";
+import Divider from "@material-ui/core/Divider";
+import { makeStyles } from "@material-ui/core/styles";
+import Link from "next/link";
+import React, { useState } from "react";
 
 const useStyles = makeStyles(theme => ({
   toolbar: theme.mixins.toolbar,
@@ -33,7 +25,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const CustomDrawer = ({ campaigns }) => {
+const CustomDrawer = ({ campaigns, currentPage }) => {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
   const handleClick = () => {
@@ -59,8 +51,6 @@ const CustomDrawer = ({ campaigns }) => {
       );
     }
 
-    console.log(campaigns);
-
     // If there are elements, render them!
     return (
       <List component="div" disablePadding>
@@ -82,8 +72,21 @@ const CustomDrawer = ({ campaigns }) => {
 
       <List>
         <Link href="/campaigns" as={`/campaigns`}>
-          <ListItem button onClick={handleClick}>
+          <ListItem
+            selected={currentPage.toLowerCase() == "campaigns"}
+            button
+            onClick={handleClick}
+          >
             <ListItemText primary="Campaigns" />
+          </ListItem>
+        </Link>
+        <Link href="/kpis" as={`/kpis`}>
+          <ListItem
+            selected={currentPage.toLowerCase() == "kpis"}
+            button
+            onClick={handleClick}
+          >
+            <ListItemText primary="KPIs" />
           </ListItem>
         </Link>
       </List>

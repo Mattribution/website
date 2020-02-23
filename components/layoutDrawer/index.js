@@ -1,9 +1,9 @@
-import React from "react";
-import PropTypes from "prop-types";
-import { CssBaseline, Hidden, Drawer } from "@material-ui/core";
+import { CssBaseline, Drawer, Hidden } from "@material-ui/core";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
-import CAppBar from "../../CAppBar";
-import DashboardDrawer from "./DashboardDrawer";
+import PropTypes from "prop-types";
+import React from "react";
+import Header from "../header";
+import DrawerContent from "./drawerContent";
 
 const drawerWidth = 240;
 
@@ -34,7 +34,8 @@ const useStyles = makeStyles(theme => ({
 }));
 
 function ResponsiveDrawer(props) {
-  const { container, campaigns } = props;
+  const { container, user, loading = false, currentPage } = props;
+  const campaigns = [];
   const classes = useStyles();
   const theme = useTheme();
   const [mobileOpen, setMobileOpen] = React.useState(false);
@@ -46,7 +47,7 @@ function ResponsiveDrawer(props) {
   return (
     <div className={classes.root}>
       <CssBaseline />
-      <CAppBar position="fixed" className={classes.appBar} />
+      <Header user={user} loading={loading} className={classes.appBar} />
       <nav className={classes.drawer} aria-label="mailbox folders">
         {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
         <Hidden smUp implementation="css">
@@ -63,7 +64,7 @@ function ResponsiveDrawer(props) {
               keepMounted: true // Better open performance on mobile.
             }}
           >
-            {<DashboardDrawer campaigns={campaigns} />}
+            {<DrawerContent currentPage={currentPage} campaigns={campaigns} />}
           </Drawer>
         </Hidden>
         <Hidden xsDown implementation="css">
@@ -74,7 +75,7 @@ function ResponsiveDrawer(props) {
             variant="permanent"
             open
           >
-            {<DashboardDrawer campaigns={campaigns} />}
+            {<DrawerContent currentPage={currentPage} campaigns={campaigns} />}
           </Drawer>
         </Hidden>
       </nav>
