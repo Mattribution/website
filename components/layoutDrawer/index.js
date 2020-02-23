@@ -1,16 +1,9 @@
-import React from "react";
-import PropTypes from "prop-types";
-import {
-  CssBaseline,
-  Hidden,
-  Drawer,
-  AppBar,
-  Toolbar,
-  Typography
-} from "@material-ui/core";
+import { CssBaseline, Drawer, Hidden } from "@material-ui/core";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
-import DrawerContent from "./drawerContent";
+import PropTypes from "prop-types";
+import React from "react";
 import Header from "../header";
+import DrawerContent from "./drawerContent";
 
 const drawerWidth = 240;
 
@@ -41,7 +34,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 function ResponsiveDrawer(props) {
-  const { container, user, loading = false } = props;
+  const { container, user, loading = false, currentPage } = props;
   const campaigns = [];
   const classes = useStyles();
   const theme = useTheme();
@@ -71,7 +64,7 @@ function ResponsiveDrawer(props) {
               keepMounted: true // Better open performance on mobile.
             }}
           >
-            {<DrawerContent campaigns={campaigns} />}
+            {<DrawerContent currentPage={currentPage} campaigns={campaigns} />}
           </Drawer>
         </Hidden>
         <Hidden xsDown implementation="css">
@@ -82,7 +75,7 @@ function ResponsiveDrawer(props) {
             variant="permanent"
             open
           >
-            {<DrawerContent campaigns={campaigns} />}
+            {<DrawerContent currentPage={currentPage} campaigns={campaigns} />}
           </Drawer>
         </Hidden>
       </nav>
