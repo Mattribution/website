@@ -26,6 +26,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const CustomDrawer = ({ campaigns, currentPage }) => {
+  currentPage = currentPage || "";
   const classes = useStyles();
   const [open, setOpen] = useState(false);
   const handleClick = () => {

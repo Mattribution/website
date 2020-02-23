@@ -1,4 +1,5 @@
 import { Button, Card, CardContent, Grid, Typography } from "@material-ui/core";
+import Link from "next/link";
 import React from "react";
 import Layout from "../../components/layoutDrawer";
 import useApi from "../../lib/use-api";
@@ -23,7 +24,7 @@ function KpiCard({ kpi }) {
             {name}
           </Typography>
           <p>
-            Conversion when <b>{column}</b> is <b>{value}</b>
+            Conversion when track <b>{column}</b> is <b>{value}</b>
           </p>
         </CardContent>
       </Card>
@@ -33,7 +34,7 @@ function KpiCard({ kpi }) {
 
 function Profile() {
   const { user, _ } = useFetchUser({ required: true });
-  const { response, error, isLoading } = useApi("/api/kpis");
+  const { response, error, isLoading } = useApi("/api/kpi/list");
   const kpis = response;
 
   if (error) {
@@ -47,9 +48,11 @@ function Profile() {
       ) : (
         <Grid container spacing={2}>
           <Grid item xs={12}>
-            <Button variant="contained" color="primary">
-              Create
-            </Button>
+            <Link href="/kpis/new">
+              <Button variant="contained" color="primary">
+                Create
+              </Button>
+            </Link>
           </Grid>
           <Grid item xs={12}>
             {kpis.map(kpi => (
