@@ -5,16 +5,17 @@ import Layout from "../../components/layoutDrawer";
 import useApi from "../../lib/use-api";
 import { useFetchUser } from "../../lib/user";
 
-function updateKPI(kpi) {
-  console.log("Updating kpi: ", kpi);
-}
-
 function KpiCard({ kpi }) {
   const { id, name, column, value } = kpi;
 
-  const handleChange = event => {
-    updateKPI(event.target.value);
-  };
+  async function deleteKpi(kpi) {
+    await fetch(`/api/kpi/${kpi.id}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json"
+      }
+    });
+  }
 
   return (
     <Grid item>
@@ -26,6 +27,13 @@ function KpiCard({ kpi }) {
           <p>
             Conversion when track <b>{column}</b> is <b>{value}</b>
           </p>
+          <Button
+            variant="contained"
+            color="secondary"
+            onClick={() => deleteKpi(kpi)}
+          >
+            Delete
+          </Button>
         </CardContent>
       </Card>
     </Grid>
