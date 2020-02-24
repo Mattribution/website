@@ -46,9 +46,18 @@ function Profile() {
   let { response, error, isLoading, refresh } = useApi("/api/kpi/list");
   const kpis = response;
 
-  if (error) {
-    return null;
-  }
+  console.log(response, error);
+
+  const renderKpis = () => {
+    if (error) {
+      return (
+        <Typography color="error">
+          There was an error fetching your KPIs
+        </Typography>
+      );
+    }
+    return kpis.map(kpi => <KpiCard refresh={refresh} kpi={kpi} />);
+  };
 
   return (
     <Layout user={user} currentPage={"kpis"} loading={isLoading}>
@@ -64,9 +73,7 @@ function Profile() {
             </Link>
           </Grid>
           <Grid item xs={12}>
-            {kpis.map(kpi => (
-              <KpiCard refresh={refresh} kpi={kpi} />
-            ))}
+            {renderKpis()}
           </Grid>
         </Grid>
       )}
