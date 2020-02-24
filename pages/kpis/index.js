@@ -1,4 +1,4 @@
-import { Button, Card, CardContent, Grid, Typography } from "@material-ui/core";
+import { Button, Card, Grid, Typography } from "@material-ui/core";
 import { ResponsivePie } from "@nivo/pie";
 import Link from "next/link";
 import React from "react";
@@ -50,76 +50,26 @@ function KpiPieChart({ data }) {
           spacing: 10
         }
       ]}
-      // fill={[
+      // legends={[
       //   {
-      //     match: {
-      //       id: "ruby"
-      //     },
-      //     id: "dots"
-      //   },
-      //   {
-      //     match: {
-      //       id: "c"
-      //     },
-      //     id: "dots"
-      //   },
-      //   {
-      //     match: {
-      //       id: "go"
-      //     },
-      //     id: "dots"
-      //   },
-      //   {
-      //     match: {
-      //       id: "python"
-      //     },
-      //     id: "dots"
-      //   },
-      //   {
-      //     match: {
-      //       id: "scala"
-      //     },
-      //     id: "lines"
-      //   },
-      //   {
-      //     match: {
-      //       id: "lisp"
-      //     },
-      //     id: "lines"
-      //   },
-      //   {
-      //     match: {
-      //       id: "elixir"
-      //     },
-      //     id: "lines"
-      //   },
-      //   {
-      //     match: {
-      //       id: "javascript"
-      //     },
-      //     id: "lines"
+      //     anchor: "bottom",
+      //     direction: "row",
+      //     translateY: 56,
+      //     itemWidth: 100,
+      //     itemHeight: 18,
+      //     itemTextColor: "#999",
+      //     symbolSize: 18,
+      //     symbolShape: "circle",
+      //     effects: [
+      //       {
+      //         on: "hover",
+      //         style: {
+      //           itemTextColor: "#000"
+      //         }
+      //       }
+      //     ]
       //   }
       // ]}
-      legends={[
-        {
-          anchor: "bottom",
-          direction: "row",
-          translateY: 56,
-          itemWidth: 100,
-          itemHeight: 18,
-          itemTextColor: "#999",
-          symbolSize: 18,
-          symbolShape: "circle",
-          effects: [
-            {
-              on: "hover",
-              style: {
-                itemTextColor: "#000"
-              }
-            }
-          ]
-        }
-      ]}
     />
   );
 }
@@ -135,7 +85,6 @@ function applyFirstTouch(aggregateData) {
       });
     }
   });
-  console.log("DATAL :", data);
   return data;
 }
 
@@ -155,16 +104,26 @@ function KpiCard({ kpi, refresh }) {
   }
 
   return (
-    <Grid item>
-      <Card variant="outlined">
-        <CardContent style={{ height: 400 }}>
+    // <Grid item>
+    <Card variant="outlined">
+      <Grid container>
+        <Grid item xs={12}>
           <Typography variant="h5" component="h2">
             {name}
           </Typography>
+        </Grid>
+
+        <Grid item xs={12}>
           <p>
             Conversion when track <b>{column}</b> is <b>{value}</b>
           </p>
-          <KpiPieChart style={{ height: 200 }} data={firstTouchData} />
+        </Grid>
+
+        <Grid item sm={12} md={6} style={{ height: 400 }}>
+          <KpiPieChart data={firstTouchData} />
+        </Grid>
+
+        <Grid item xs={12}>
           <Button
             variant="contained"
             color="secondary"
@@ -172,9 +131,10 @@ function KpiCard({ kpi, refresh }) {
           >
             Delete
           </Button>
-        </CardContent>
-      </Card>
-    </Grid>
+        </Grid>
+      </Grid>
+    </Card>
+    // </Grid>
   );
 }
 
