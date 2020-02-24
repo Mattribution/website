@@ -64,7 +64,6 @@ function Profile() {
             </Link>
           </Grid>
           <Grid item xs={12}>
-            {num}
             {kpis.map(kpi => (
               <KpiCard refresh={refresh} kpi={kpi} />
             ))}
