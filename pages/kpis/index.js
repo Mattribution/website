@@ -5,7 +5,7 @@ import Layout from "../../components/layoutDrawer";
 import useApi from "../../lib/use-api";
 import { useFetchUser } from "../../lib/user";
 
-function KpiCard({ kpi }) {
+function KpiCard({ kpi, refresh }) {
   const { id, name, column, value } = kpi;
 
   async function deleteKpi(kpi) {
@@ -15,6 +15,7 @@ function KpiCard({ kpi }) {
         "Content-Type": "application/json"
       }
     });
+    refresh();
   }
 
   return (
@@ -42,7 +43,7 @@ function KpiCard({ kpi }) {
 
 function Profile() {
   const { user, _ } = useFetchUser({ required: true });
-  const { response, error, isLoading } = useApi("/api/kpi/list");
+  let { response, error, isLoading, refresh } = useApi("/api/kpi/list");
   const kpis = response;
 
   if (error) {
@@ -64,7 +65,7 @@ function Profile() {
           </Grid>
           <Grid item xs={12}>
             {kpis.map(kpi => (
-              <KpiCard kpi={kpi} />
+              <KpiCard refresh={refresh} kpi={kpi} />
             ))}
           </Grid>
         </Grid>

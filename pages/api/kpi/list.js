@@ -14,7 +14,6 @@ export default async function list(req, res) {
       }
     });
 
-    console.log("RESP HRE: ", response);
     const resp = await response.json();
 
     res.status(200).json(resp);
