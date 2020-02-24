@@ -1,12 +1,148 @@
 import { Button, Card, CardContent, Grid, Typography } from "@material-ui/core";
+import { ResponsivePie } from "@nivo/pie";
 import Link from "next/link";
 import React from "react";
 import Layout from "../../components/layoutDrawer";
 import useApi from "../../lib/use-api";
 import { useFetchUser } from "../../lib/user";
 
+function KpiPieChart({ data }) {
+  return (
+    <ResponsivePie
+      data={data}
+      margin={{ top: 40, right: 80, bottom: 80, left: 80 }}
+      innerRadius={0.5}
+      padAngle={0.7}
+      cornerRadius={3}
+      colors={{ scheme: "nivo" }}
+      borderWidth={1}
+      borderColor={{ from: "color", modifiers: [["darker", 0.2]] }}
+      radialLabelsSkipAngle={10}
+      radialLabelsTextXOffset={6}
+      radialLabelsTextColor="#333333"
+      radialLabelsLinkOffset={0}
+      radialLabelsLinkDiagonalLength={16}
+      radialLabelsLinkHorizontalLength={24}
+      radialLabelsLinkStrokeWidth={1}
+      radialLabelsLinkColor={{ from: "color" }}
+      slicesLabelsSkipAngle={10}
+      slicesLabelsTextColor="#333333"
+      animate={true}
+      motionStiffness={90}
+      motionDamping={15}
+      defs={[
+        {
+          id: "dots",
+          type: "patternDots",
+          background: "inherit",
+          color: "rgba(255, 255, 255, 0.3)",
+          size: 4,
+          padding: 1,
+          stagger: true
+        },
+        {
+          id: "lines",
+          type: "patternLines",
+          background: "inherit",
+          color: "rgba(255, 255, 255, 0.3)",
+          rotation: -45,
+          lineWidth: 6,
+          spacing: 10
+        }
+      ]}
+      // fill={[
+      //   {
+      //     match: {
+      //       id: "ruby"
+      //     },
+      //     id: "dots"
+      //   },
+      //   {
+      //     match: {
+      //       id: "c"
+      //     },
+      //     id: "dots"
+      //   },
+      //   {
+      //     match: {
+      //       id: "go"
+      //     },
+      //     id: "dots"
+      //   },
+      //   {
+      //     match: {
+      //       id: "python"
+      //     },
+      //     id: "dots"
+      //   },
+      //   {
+      //     match: {
+      //       id: "scala"
+      //     },
+      //     id: "lines"
+      //   },
+      //   {
+      //     match: {
+      //       id: "lisp"
+      //     },
+      //     id: "lines"
+      //   },
+      //   {
+      //     match: {
+      //       id: "elixir"
+      //     },
+      //     id: "lines"
+      //   },
+      //   {
+      //     match: {
+      //       id: "javascript"
+      //     },
+      //     id: "lines"
+      //   }
+      // ]}
+      legends={[
+        {
+          anchor: "bottom",
+          direction: "row",
+          translateY: 56,
+          itemWidth: 100,
+          itemHeight: 18,
+          itemTextColor: "#999",
+          symbolSize: 18,
+          symbolShape: "circle",
+          effects: [
+            {
+              on: "hover",
+              style: {
+                itemTextColor: "#000"
+              }
+            }
+          ]
+        }
+      ]}
+    />
+  );
+}
+
+function applyFirstTouch(aggregateData) {
+  const data = [];
+  aggregateData.forEach(positionData => {
+    if (positionData.position == 1) {
+      data.push({
+        id: positionData.value,
+        label: positionData.value,
+        value: positionData.count
+      });
+    }
+  });
+  console.log("DATAL :", data);
+  return data;
+}
+
 function KpiCard({ kpi, refresh }) {
-  const { id, name, column, value } = kpi;
+  const { id, name, column, value, campaignNameJourneyAggregate } = kpi;
+  const firstTouchData = applyFirstTouch(campaignNameJourneyAggregate);
+  console.log("FT: ", firstTouchData);
 
   async function deleteKpi(kpi) {
     await fetch(`/api/kpi/${kpi.id}`, {
@@ -21,13 +157,14 @@ function KpiCard({ kpi, refresh }) {
   return (
     <Grid item>
       <Card variant="outlined">
-        <CardContent>
+        <CardContent style={{ height: 400 }}>
           <Typography variant="h5" component="h2">
             {name}
           </Typography>
           <p>
             Conversion when track <b>{column}</b> is <b>{value}</b>
           </p>
+          <KpiPieChart style={{ height: 200 }} data={firstTouchData} />
           <Button
             variant="contained"
             color="secondary"
@@ -45,8 +182,6 @@ function Profile() {
   const { user, _ } = useFetchUser({ required: true });
   let { response, error, isLoading, refresh } = useApi("/api/kpi/list");
   const kpis = response;
-
-  console.log(response, error);
 
   const renderKpis = () => {
     if (error) {
