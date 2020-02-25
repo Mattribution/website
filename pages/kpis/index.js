@@ -1,7 +1,14 @@
-import { Button, Card, Grid, Typography } from "@material-ui/core";
+import {
+  Button,
+  Card,
+  Grid,
+  MenuItem,
+  Select,
+  Typography
+} from "@material-ui/core";
 import { ResponsivePie } from "@nivo/pie";
 import Link from "next/link";
-import React from "react";
+import React, { useState } from "react";
 import Layout from "../../components/layoutDrawer";
 import useApi from "../../lib/use-api";
 import { useFetchUser } from "../../lib/user";
@@ -50,26 +57,6 @@ function KpiPieChart({ data }) {
           spacing: 10
         }
       ]}
-      // legends={[
-      //   {
-      //     anchor: "bottom",
-      //     direction: "row",
-      //     translateY: 56,
-      //     itemWidth: 100,
-      //     itemHeight: 18,
-      //     itemTextColor: "#999",
-      //     symbolSize: 18,
-      //     symbolShape: "circle",
-      //     effects: [
-      //       {
-      //         on: "hover",
-      //         style: {
-      //           itemTextColor: "#000"
-      //         }
-      //       }
-      //     ]
-      //   }
-      // ]}
     />
   );
 }
@@ -88,12 +75,56 @@ function applyFirstTouch(aggregateData) {
   return data;
 }
 
-function KpiCard({ kpi, refresh }) {
-  const { id, name, column, value, campaignNameJourneyAggregate } = kpi;
-  const firstTouchData = applyFirstTouch(campaignNameJourneyAggregate);
-  console.log("FT: ", firstTouchData);
+function applyLinear(aggregateData) {
+  console.log(aggregateData);
+  const data = [];
+  const keyScoreMap = {};
+  aggregateData.forEach(positionData => {
+    keyScoreMap[positionData.value] =
+      (keyScoreMap[positionData.value] || 0) + positionData.count;
+  });
+  for (var key of Object.keys(keyScoreMap)) {
+    const score = keyScoreMap[key];
+    data.push({
+      id: key,
+      label: key,
+      value: score
+    });
+  }
+  return data;
+}
+
+function getPieChartDataFromAggregate(modelId, aggregate) {
+  if (modelId == "first-touch") {
+    return applyFirstTouch(aggregate);
+  }
+  if (modelId == "linear") {
+    return applyLinear(aggregate);
+  }
+
+  return applyFirstTouch(aggregate);
+}
+
+function KpiCard(props) {
+  const { refresh } = props;
+  const [kpi, setKpi] = useState(props.kpi);
+
+  const {
+    id,
+    modelId,
+    name,
+    column,
+    value,
+    campaignNameJourneyAggregate
+  } = kpi;
+
+  const pieChartData = getPieChartDataFromAggregate(
+    modelId,
+    campaignNameJourneyAggregate
+  );
 
   async function deleteKpi(kpi) {
+    // TODO: Error handling
     await fetch(`/api/kpi/${kpi.id}`, {
       method: "DELETE",
       headers: {
@@ -103,10 +134,33 @@ function KpiCard({ kpi, refresh }) {
     refresh();
   }
 
+  async function updateKpi(kpi) {
+    // TODO: Error handling
+    const resp = await fetch(`/api/kpi/${kpi.id}`, {
+      method: "PUT",
+      body: JSON.stringify(kpi),
+      headers: {
+        "Content-Type": "application/json"
+      }
+    });
+
+    if (resp.status == 200) {
+      setKpi({
+        ...kpi
+      });
+    }
+  }
+
+  function handleModelIdChange(event) {
+    // TODO: update client kpi state without another fetch
+    kpi.modelId = event.target.value;
+    updateKpi(kpi);
+  }
+
   return (
     // <Grid item>
     <Card variant="outlined">
-      <Grid container>
+      <Grid container style={{ padding: 20 }}>
         <Grid item xs={12}>
           <Typography variant="h5" component="h2">
             {name}
@@ -117,10 +171,21 @@ function KpiCard({ kpi, refresh }) {
           <p>
             Conversion when track <b>{column}</b> is <b>{value}</b>
           </p>
+          Model:{" "}
+          <Select
+            labelId="demo-simple-select-label"
+            id="demo-simple-select"
+            value={modelId}
+            onChange={handleModelIdChange}
+          >
+            <MenuItem value={"first-touch"}>First Touch</MenuItem>
+            <MenuItem value={"last-touch"}>Last Touch</MenuItem>
+            <MenuItem value={"linear"}>Linear</MenuItem>
+          </Select>
         </Grid>
 
         <Grid item sm={12} md={6} style={{ height: 400 }}>
-          <KpiPieChart data={firstTouchData} />
+          <KpiPieChart data={pieChartData} />
         </Grid>
 
         <Grid item xs={12}>
@@ -151,7 +216,15 @@ function Profile() {
         </Typography>
       );
     }
-    return kpis.map(kpi => <KpiCard refresh={refresh} kpi={kpi} />);
+    return (
+      <Grid container spacing={4}>
+        {kpis.map(kpi => (
+          <Grid item xs={12}>
+            <KpiCard refresh={refresh} kpi={kpi} />
+          </Grid>
+        ))}
+      </Grid>
+    );
   };
 
   return (
@@ -159,7 +232,7 @@ function Profile() {
       {isLoading ? (
         <>Loading...</>
       ) : (
-        <Grid container spacing={2}>
+        <Grid container spacing={4}>
           <Grid item xs={12}>
             <Link href="/kpis/new">
               <Button variant="contained" color="primary">

@@ -23,7 +23,6 @@ function NewKPICard() {
         "Content-Type": "application/json"
       }
     });
-    console.log(res);
     if (res.status != 200) {
       setError(res.statusText);
       return;
