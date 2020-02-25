@@ -23,7 +23,6 @@ function NewKPICard() {
         "Content-Type": "application/json"
       }
     });
-    console.log(res);
     if (res.status != 200) {
       setError(res.statusText);
       return;
@@ -72,8 +71,8 @@ function NewKPICard() {
           onChange={handleColumnChange}
         >
           <MenuItem value={"event"}>Event</MenuItem>
-          <MenuItem value={"pagePath"}>Page Path</MenuItem>
-          <MenuItem value={"pageTitle"}>Page Title</MenuItem>
+          <MenuItem value={"page_path"}>Page Path</MenuItem>
+          <MenuItem value={"page_title"}>Page Title</MenuItem>
         </Select>
         is
         <TextField
