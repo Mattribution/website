@@ -19,7 +19,8 @@ function KpiTimeDataLine({ data }) {
     <ResponsiveLine
       data={data}
       margin={{ top: 50, right: 110, bottom: 50, left: 60 }}
-      xScale={{ type: "point", stacked: false }}
+		xScale={{ type: "time", format: '%Y-%m-%d', precision: 'day', stacked: false }}
+		xFormat="time:%Y-%m-%d"
       yScale={{
         type: "linear",
         stacked: false
@@ -28,11 +29,10 @@ function KpiTimeDataLine({ data }) {
       axisRight={null}
       axisBottom={{
         orient: "bottom",
-        tickSize: 5,
-        tickPadding: 5,
-        tickRotation: 0,
-        legend: "day",
+		format: '%b %d',
+		tickValues: 'every 2 days',
         legendOffset: 36,
+		legend: 'Days',
         legendPosition: "middle"
       }}
       axisLeft={{
@@ -187,10 +187,8 @@ function applyFirstTouch(aggregateData) {
     days.sort();
     let currentDate = new Date(days[0]);
     let lastScore = 0;
-    console.log(days);
     while (currentDate <= new Date(days[days.length - 1])) {
       const currentDateStr = currentDate.toISOString().split("T")[0];
-      console.log(currentDateStr, lastScore);
       if (!daysData[currentDateStr]) {
         timeData[value][currentDateStr] = lastScore;
       } else {
@@ -214,6 +212,7 @@ function applyFirstTouch(aggregateData) {
     days.sort();
     for (var day of days) {
       const dayString = new Date(day).toISOString().split("T")[0];
+	  console.log(dayString)
       const totalScore = daysData[day];
       lineData.data.push({
         x: dayString,
