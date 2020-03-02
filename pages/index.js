@@ -1,16 +1,16 @@
-import React from "react";
-import { makeStyles } from "@material-ui/core/styles";
+import React from 'react';
+import { makeStyles } from '@material-ui/core/styles';
 
-import Layout from "../components/layoutDrawer";
-import { useFetchUser } from "../lib/user";
+import Layout from '../components/layoutDrawer';
+import { useFetchUser } from '../lib/user';
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   button: {
-    margin: theme.spacing(1)
+    margin: theme.spacing(1),
   },
   input: {
-    display: "none"
-  }
+    display: 'none',
+  },
 }));
 
 function Home() {
@@ -26,11 +26,17 @@ function Home() {
       {!loading && !user && (
         <>
           <p>
-            To test the login click in <i>Login</i>
+            To test the login click in
+            {' '}
+            <i>Login</i>
           </p>
           <p>
-            Once you have logged in you should be able to click in{" "}
-            <i>Profile</i> and <i>Logout</i>
+            Once you have logged in you should be able to click in
+            {' '}
+            <i>Profile</i>
+            {' '}
+            and
+            <i>Logout</i>
           </p>
         </>
       )}
@@ -39,8 +45,14 @@ function Home() {
         <>
           <h4>Rendered user info on the client</h4>
           <img src={user.picture} alt="user picture" />
-          <p>nickname: {user.nickname}</p>
-          <p>name: {user.name}</p>
+          <p>
+            nickname:
+            {user.nickname}
+          </p>
+          <p>
+            name:
+            {user.name}
+          </p>
         </>
       )}
     </Layout>

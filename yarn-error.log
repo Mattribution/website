@@ -1,5 +1,5 @@
 Arguments: 
-  /Users/Zac/.nvm/versions/node/v11.6.0/bin/node /usr/local/bin/yarn install
+  /Users/Zac/.nvm/versions/node/v11.6.0/bin/node /usr/local/bin/yarn add prettier --dev --exact
 
 PATH: 
   /Users/Zac/.rvm/gems/ruby-2.3.1@rails514/bin:/Users/Zac/.rvm/gems/ruby-2.3.1@global/bin:/Users/Zac/.rvm/rubies/ruby-2.3.1/bin:/Users/Zac/.nvm/versions/node/v11.6.0/bin:/Users/Zac/.gvm/pkgsets/go1.13.4/global/bin:/Users/Zac/.gvm/gos/go1.13.4/bin:/Users/Zac/.gvm/pkgsets/go1.13.4/global/overlay/bin:/Users/Zac/.gvm/bin:/Users/Zac/.gvm/bin:/Users/Zac/google-cloud-sdk/bin:/Users/Zac/opt/packages/cassandra/ddac-5.1.17/bin:/usr/local/bin/protoc-gen-grpc-web:/usr/local/bin/protoc:/Users/Zac/bin:/usr/local/bin:/Users/Zac/anaconda3/bin:/Library/Frameworks/Python.framework/Versions/3.7/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/go/bin:/usr/local/share/dotnet:/opt/X11/bin:/Library/Frameworks/Mono.framework/Versions/Current/Commands:/Applications/Wireshark.app/Contents/MacOS:/usr/local/git/bin:/Users/Zac/.rvm/bin
@@ -27,12 +27,24 @@ npm manifest:
       "@auth0/nextjs-auth0": "^0.8.0",
       "@material-ui/core": "latest",
       "@material-ui/icons": "^4.9.1",
+      "@nivo/line": "^0.61.1",
+      "@nivo/pie": "^0.61.1",
       "classnames": "^2.2.6",
       "dotenv": "^8.2.0",
       "isomorphic-unfetch": "^3.0.0",
       "next": "latest",
+      "nivo": "^0.31.0",
       "react": "^16.12.0",
       "react-dom": "^16.12.0"
+    },
+    "devDependencies": {
+      "@nivo/generators": "^0.61.0",
+      "eslint": "^6.8.0",
+      "eslint-config-airbnb": "^18.0.1",
+      "eslint-plugin-import": "^2.20.1",
+      "eslint-plugin-jsx-a11y": "^6.2.3",
+      "eslint-plugin-react": "^7.18.3",
+      "eslint-plugin-react-hooks": "^1.7.0"
     }
   }
 
@@ -6342,7 +6354,7 @@ Lockfile:
     integrity sha1-27fa+b/YusmrRev2ArjLrQ1dCP0=
 
 Trace: 
-  Error: https://artifactnub1.jfrog.io/artifactnub1/api/npm/npm-virtual/@hapi/b64/-/b64-4.2.1.tgz: Request failed "401 Unauthorized"
+  Error: https://artifactnub1.jfrog.io/artifactnub1/api/npm/npm-virtual/base64url/-/base64url-3.0.1.tgz: Request failed "401 Unauthorized"
       at Request.<anonymous> (/usr/local/lib/node_modules/yarn/lib/cli.js:59356:26)
       at Request.emit (events.js:188:13)
       at Request.module.exports.Request.onRequestResponse (/usr/local/lib/node_modules/yarn/lib/cli.js:123971:10)
