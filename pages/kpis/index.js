@@ -15,6 +15,14 @@ import KpiTimeDataLine from '../../components/kpiTimeDataLine';
 import Layout from "../../components/layoutDrawer";
 import useApi from "../../lib/use-api";
 
+function firstTouch({position, value, count, day}) {
+	if (position == 1) {
+		return count
+	}
+	return 0
+}
+
+
 function applyFirstTouch(aggregateData) {
   const pieData = {};
   const timeData = {};
@@ -98,7 +106,6 @@ function applyFirstTouch(aggregateData) {
     days.sort();
     for (var day of days) {
       const dayString = new Date(day).toISOString().split("T")[0];
-	  console.log(dayString)
       const totalScore = daysData[day];
       lineData.data.push({
         x: dayString,
@@ -155,8 +162,6 @@ function KpiCard(props) {
     modelId,
     campaignNameJourneyAggregate
   );
-
-  console.log("TIme Data: ", nivoTimeData);
 
   async function deleteKpi(kpi) {
     // TODO: Error handling
