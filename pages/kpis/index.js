@@ -4,21 +4,18 @@ import {
   Grid,
   MenuItem,
   Select,
-  Typography,
-} from '@material-ui/core';
-import Link from 'next/link';
-import React, { useState } from 'react';
-
-import { useFetchUser } from '../../lib/user';
-import KpiPieChart from '../../components/kpiPieChart';
-import KpiTimeDataLine from '../../components/kpiTimeDataLine';
-import Layout from '../../components/layoutDrawer';
-import useApi from '../../lib/use-api';
+  Typography
+} from "@material-ui/core";
+import Link from "next/link";
+import React, { useState } from "react";
+import KpiPieChart from "../../components/kpiPieChart";
+import KpiTimeDataLine from "../../components/kpiTimeDataLine";
+import Layout from "../../components/layoutDrawer";
+import useApi from "../../lib/use-api";
+import { useFetchUser } from "../../lib/user";
 
 // firsTouch takes in a single aggregate entry and returns a score for it
-function firstTouch({
-  position, value, count, day,
-}) {
+function firstTouch({ position, value, count, day }) {
   if (position === 1) {
     return count;
   }
@@ -28,9 +25,9 @@ function firstTouch({
 // applyScoreFunctionToAggregateData takes in a scoring function and some aggreate data and adds a 'score' attribute to each
 // aggreagte entry using the function
 function applyScoreFunctionToAggregateData(scoreFunc, data) {
-  return data.map((aggr) => ({
+  return data.map(aggr => ({
     ...aggr,
-    score: scoreFunc(aggr),
+    score: scoreFunc(aggr)
   }));
 }
 
@@ -42,10 +39,10 @@ function formatScoredAggregateDataForNivo(data) {
   // Position: the journey position
   // Count: how many happened in this period
   // Day: what day this entry is accounting for
-  data.forEach((aggregate) => {
+  data.forEach(aggregate => {
     const { value, day } = aggregate;
     const score = aggregate.score || 0;
-    const dayStr = new Date(day).toISOString().split('T')[0];
+    const dayStr = new Date(day).toISOString().split("T")[0];
     // Pie chart
     if (!pieData[value]) {
       pieData[value] = 0;
@@ -68,7 +65,7 @@ function formatScoredAggregateDataForNivo(data) {
     const score = pieData[key];
     nivoPieData.push({
       id: key,
-      value: score,
+      value: score
     });
   }
 
@@ -94,7 +91,7 @@ function formatScoredAggregateDataForNivo(data) {
     const currentDate = new Date(days[0]);
     let lastScore = 0;
     while (currentDate <= new Date(days[days.length - 1])) {
-      const currentDateStr = currentDate.toISOString().split('T')[0];
+      const currentDateStr = currentDate.toISOString().split("T")[0];
       if (!daysData[currentDateStr]) {
         timeData[value][currentDateStr] = lastScore;
       } else {
@@ -111,17 +108,17 @@ function formatScoredAggregateDataForNivo(data) {
     // Data for a single line (contains x y coordinates)
     const lineData = {
       id: value,
-      data: [],
+      data: []
     };
     const daysData = timeData[value];
     const days = Object.keys(daysData);
     days.sort();
     for (var day of days) {
-      const dayString = new Date(day).toISOString().split('T')[0];
+      const dayString = new Date(day).toISOString().split("T")[0];
       const totalScore = daysData[day];
       lineData.data.push({
         x: dayString,
-        y: totalScore,
+        y: totalScore
       });
     }
     nivoTimeData.push(lineData);
@@ -139,26 +136,32 @@ function KpiCard(props) {
     name,
     column,
     value,
-    campaignNameJourneyAggregate,
+    campaignNameJourneyAggregate
   } = kpi;
 
   let scoredData;
-  if (modelId === 'first-touch') {
-    scoredData = applyScoreFunctionToAggregateData(firstTouch, campaignNameJourneyAggregate);
+  if (modelId === "first-touch") {
+    scoredData = applyScoreFunctionToAggregateData(
+      firstTouch,
+      campaignNameJourneyAggregate
+    );
   } else {
-    scoredData = applyScoreFunctionToAggregateData(firstTouch, campaignNameJourneyAggregate);
+    scoredData = applyScoreFunctionToAggregateData(
+      firstTouch,
+      campaignNameJourneyAggregate
+    );
   }
   const { nivoPieData, nivoTimeData } = formatScoredAggregateDataForNivo(
-    scoredData,
+    scoredData
   );
 
   async function deleteKpi(kpi) {
     // TODO: Error handling
     await fetch(`/api/kpi/${kpi.id}`, {
-      method: 'DELETE',
+      method: "DELETE",
       headers: {
-        'Content-Type': 'application/json',
-      },
+        "Content-Type": "application/json"
+      }
     });
     refresh();
   }
@@ -166,16 +169,16 @@ function KpiCard(props) {
   async function updateKpi(kpi) {
     // TODO: Error handling
     const resp = await fetch(`/api/kpi/${kpi.id}`, {
-      method: 'PUT',
+      method: "PUT",
       body: JSON.stringify(kpi),
       headers: {
-        'Content-Type': 'application/json',
-      },
+        "Content-Type": "application/json"
+      }
     });
 
     if (resp.status === 200) {
       setKpi({
-        ...kpi,
+        ...kpi
       });
     }
   }
@@ -198,16 +201,9 @@ function KpiCard(props) {
 
         <Grid item xs={12}>
           <p>
-            Conversion when track
-            {' '}
-            <b>{column}</b>
-            {' '}
-            is
-            {' '}
-            <b>{value}</b>
+            Conversion when track <b>{column}</b> is <b>{value}</b>
           </p>
-          Model:
-          {' '}
+          Model:{" "}
           <Select
             labelId="demo-simple-select-label"
             id="demo-simple-select"
@@ -245,9 +241,7 @@ function KpiCard(props) {
 
 function Profile() {
   const { user, _ } = useFetchUser({ required: true });
-  const {
-    response, error, isLoading, refresh,
-  } = useApi('/api/kpi/list');
+  const { response, error, isLoading, refresh } = useApi("/api/kpi/list");
   const kpis = response;
 
   const renderKpis = () => {
@@ -258,9 +252,12 @@ function Profile() {
         </Typography>
       );
     }
+    if (kpis.length === 0) {
+      return null;
+    }
     return (
       <Grid container spacing={4}>
-        {kpis.map((kpi) => (
+        {kpis.map(kpi => (
           <Grid item xs={12}>
             <KpiCard refresh={refresh} kpi={kpi} />
           </Grid>
