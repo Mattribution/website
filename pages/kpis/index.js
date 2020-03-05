@@ -4,59 +4,71 @@ import {
   Grid,
   MenuItem,
   Select,
-  Typography
-} from "@material-ui/core";
-import Link from "next/link";
-import React, { useState } from "react";
+  Typography,
+} from '@material-ui/core';
+import Link from 'next/link';
+import React, { useState } from 'react';
 
-import { useFetchUser } from "../../lib/user";
+import { useFetchUser } from '../../lib/user';
 import KpiPieChart from '../../components/kpiPieChart';
 import KpiTimeDataLine from '../../components/kpiTimeDataLine';
-import Layout from "../../components/layoutDrawer";
-import useApi from "../../lib/use-api";
+import Layout from '../../components/layoutDrawer';
+import useApi from '../../lib/use-api';
 
-function firstTouch({position, value, count, day}) {
-	if (position == 1) {
-		return count
-	}
-	return 0
+// firsTouch takes in a single aggregate entry and returns a score for it
+function firstTouch({
+  position, value, count, day,
+}) {
+  if (position === 1) {
+    return count;
+  }
+  return 0;
 }
 
+// applyScoreFunctionToAggregateData takes in a scoring function and some aggreate data and adds a 'score' attribute to each
+// aggreagte entry using the function
+function applyScoreFunctionToAggregateData(scoreFunc, data) {
+  return data.map((aggr) => ({
+    ...aggr,
+    score: scoreFunc(aggr),
+  }));
+}
 
-function applyFirstTouch(aggregateData) {
+// formatScoredAggregateDataForNivo takes in pre-scored aggregate data array and formats it for Nivo pie chart and line charts
+function formatScoredAggregateDataForNivo(data) {
   const pieData = {};
   const timeData = {};
   // Value: the value of the column, most often campaign_name
   // Position: the journey position
   // Count: how many happened in this period
   // Day: what day this entry is accounting for
-  aggregateData.forEach(({ position, value, count, day }) => {
-    const dayStr = new Date(day).toISOString().split("T")[0];
-    if (position == 1) {
-      // Pie chart
-      if (!pieData[value]) {
-        pieData[value] = 0;
-      }
-      pieData[value] += count;
-
-      // Time series
-      if (!timeData[value]) {
-        timeData[value] = {};
-      }
-      if (!timeData[value][dayStr]) {
-        timeData[value][dayStr] = 0;
-      }
-      timeData[value][dayStr] += count;
+  data.forEach((aggregate) => {
+    const { value, day } = aggregate;
+    const score = aggregate.score || 0;
+    const dayStr = new Date(day).toISOString().split('T')[0];
+    // Pie chart
+    if (!pieData[value]) {
+      pieData[value] = 0;
     }
+    pieData[value] += score;
+
+    // Time series
+    if (!timeData[value]) {
+      timeData[value] = {};
+    }
+    if (!timeData[value][dayStr]) {
+      timeData[value][dayStr] = 0;
+    }
+    timeData[value][dayStr] += score;
   });
 
   // Convert pie data object to array of objects that nivo can ingest
   const nivoPieData = [];
-  for (var key of Object.keys(pieData)) {
+  for (const key of Object.keys(pieData)) {
     const score = pieData[key];
     nivoPieData.push({
       id: key,
-      value: score
+      value: score,
     });
   }
 
@@ -79,10 +91,10 @@ function applyFirstTouch(aggregateData) {
     const daysData = timeData[value];
     const days = Object.keys(daysData);
     days.sort();
-    let currentDate = new Date(days[0]);
+    const currentDate = new Date(days[0]);
     let lastScore = 0;
     while (currentDate <= new Date(days[days.length - 1])) {
-      const currentDateStr = currentDate.toISOString().split("T")[0];
+      const currentDateStr = currentDate.toISOString().split('T')[0];
       if (!daysData[currentDateStr]) {
         timeData[value][currentDateStr] = lastScore;
       } else {
@@ -99,50 +111,22 @@ function applyFirstTouch(aggregateData) {
     // Data for a single line (contains x y coordinates)
     const lineData = {
       id: value,
-      data: []
+      data: [],
     };
     const daysData = timeData[value];
     const days = Object.keys(daysData);
     days.sort();
     for (var day of days) {
-      const dayString = new Date(day).toISOString().split("T")[0];
+      const dayString = new Date(day).toISOString().split('T')[0];
       const totalScore = daysData[day];
       lineData.data.push({
         x: dayString,
-        y: totalScore
+        y: totalScore,
       });
     }
     nivoTimeData.push(lineData);
   }
   return { nivoPieData, nivoTimeData };
-}
-
-// function applyLinear(aggregateData) {
-//   console.log(aggregateData);
-//   const data = [];
-//   const keyScoreMap = {};
-//   aggregateData.forEach(({ position, value, count, day }) => {
-//     keyScoreMap[value] = (keyScoreMap[value] || 0) + count;
-//   });
-//   for (var key of Object.keys(keyScoreMap)) {
-//     const score = keyScoreMap[key];
-//     data.push({
-//       id: key,
-//       label: key,
-//       value: score
-//     });
-//   }
-//   return data;
-// }
-
-function getDataFromAggregate(modelId, aggregate) {
-  if (modelId == "first-touch") {
-    return applyFirstTouch(aggregate);
-  }
-  // if (modelId == "linear") {
-  //   return applyLinear(aggregate);
-  // }
-  return applyFirstTouch(aggregate);
 }
 
 function KpiCard(props) {
@@ -155,21 +139,26 @@ function KpiCard(props) {
     name,
     column,
     value,
-    campaignNameJourneyAggregate
+    campaignNameJourneyAggregate,
   } = kpi;
 
-  let { nivoPieData, nivoTimeData } = getDataFromAggregate(
-    modelId,
-    campaignNameJourneyAggregate
+  let scoredData;
+  if (modelId === 'first-touch') {
+    scoredData = applyScoreFunctionToAggregateData(firstTouch, campaignNameJourneyAggregate);
+  } else {
+    scoredData = applyScoreFunctionToAggregateData(firstTouch, campaignNameJourneyAggregate);
+  }
+  const { nivoPieData, nivoTimeData } = formatScoredAggregateDataForNivo(
+    scoredData,
   );
 
   async function deleteKpi(kpi) {
     // TODO: Error handling
     await fetch(`/api/kpi/${kpi.id}`, {
-      method: "DELETE",
+      method: 'DELETE',
       headers: {
-        "Content-Type": "application/json"
-      }
+        'Content-Type': 'application/json',
+      },
     });
     refresh();
   }
@@ -177,16 +166,16 @@ function KpiCard(props) {
   async function updateKpi(kpi) {
     // TODO: Error handling
     const resp = await fetch(`/api/kpi/${kpi.id}`, {
-      method: "PUT",
+      method: 'PUT',
       body: JSON.stringify(kpi),
       headers: {
-        "Content-Type": "application/json"
-      }
+        'Content-Type': 'application/json',
+      },
     });
 
-    if (resp.status == 200) {
+    if (resp.status === 200) {
       setKpi({
-        ...kpi
+        ...kpi,
       });
     }
   }
@@ -209,18 +198,25 @@ function KpiCard(props) {
 
         <Grid item xs={12}>
           <p>
-            Conversion when track <b>{column}</b> is <b>{value}</b>
+            Conversion when track
+            {' '}
+            <b>{column}</b>
+            {' '}
+            is
+            {' '}
+            <b>{value}</b>
           </p>
-          Model:{" "}
+          Model:
+          {' '}
           <Select
             labelId="demo-simple-select-label"
             id="demo-simple-select"
             value={modelId}
             onChange={handleModelIdChange}
           >
-            <MenuItem value={"first-touch"}>First Touch</MenuItem>
-            <MenuItem value={"last-touch"}>Last Touch</MenuItem>
-            <MenuItem value={"linear"}>Linear</MenuItem>
+            <MenuItem value="first-touch">First Touch</MenuItem>
+            <MenuItem value="last-touch">Last Touch</MenuItem>
+            <MenuItem value="linear">Linear</MenuItem>
           </Select>
         </Grid>
 
@@ -249,7 +245,9 @@ function KpiCard(props) {
 
 function Profile() {
   const { user, _ } = useFetchUser({ required: true });
-  let { response, error, isLoading, refresh } = useApi("/api/kpi/list");
+  const {
+    response, error, isLoading, refresh,
+  } = useApi('/api/kpi/list');
   const kpis = response;
 
   const renderKpis = () => {
@@ -262,7 +260,7 @@ function Profile() {
     }
     return (
       <Grid container spacing={4}>
-        {kpis.map(kpi => (
+        {kpis.map((kpi) => (
           <Grid item xs={12}>
             <KpiCard refresh={refresh} kpi={kpi} />
           </Grid>
@@ -272,7 +270,7 @@ function Profile() {
   };
 
   return (
-    <Layout user={user} currentPage={"kpis"} loading={isLoading}>
+    <Layout user={user} currentPage="kpis" loading={isLoading}>
       {isLoading ? (
         <>Loading...</>
       ) : (
