@@ -9,7 +9,7 @@
 	  "REDIRECT_URI": "@redirect_uri",
 	  "POST_LOGOUT_REDIRECT_URI": "@post_logout_redirect_uri",
 	  "SESSION_COOKIE_SECRET": "@session_cookie_secret",
-	  "API_BASE_URL": "@api_base_url"
+	  "API_BASE_URL": "https://us-central1-mattribution.cloudfunctions.net/v1"
     }
   }
 }
